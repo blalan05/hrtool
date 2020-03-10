@@ -19,3 +19,7 @@ yarn-error.log*
 *.njsproj
 *.sln
 *.sw?
+
+src/components/myData.json
+
+src/components/myData2.json
