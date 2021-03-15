@@ -1,16 +1,31 @@
 <template>
-  <v-app>
-    <HelloWorld></HelloWorld>
-  </v-app>
+  <div>
+    <v-app-bar dense fixed>
+      <Nav />
+    </v-app-bar>
+    <v-app>
+      <v-row>
+        <Tasks />
+        <Employee />
+      </v-row>
+    </v-app>
+  </div>
 </template>
 
 <script>
-import HelloWorld from "./components/HelloWorld.vue";
+import Nav from './components/Nav';
+import Tasks from './components/Tasks';
+import Employee from './components/Employee';
+//import JSON from './components/myData.json'
+
+//const uploadData = JSONz
 
 export default {
   name: "App",
   components: {
-    HelloWorld
+    Nav,
+    Tasks,
+    Employee,
   }
 };
 </script>

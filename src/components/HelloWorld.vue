@@ -3,7 +3,8 @@
     <v-container>
       <v-row>
         <v-col cols="2">
-          <v-menu offset-y :close-on-content-click="false" v-model="addTaskMenu">
+          <v-card-title>Tasks</v-card-title>
+          <!-- <v-menu offset-y :close-on-content-click="false" v-model="addTaskMenu">
             <template #activator="{ on }">
               <v-btn v-on="on">Add Task</v-btn>
             </template>
@@ -21,7 +22,7 @@
                 <v-btn @click="saveNewTask">Save</v-btn>
               </v-card-actions>
             </v-card>
-          </v-menu>
+          </v-menu> -->
           <v-list class="list-group" dense>
             <draggable :list="taskList" group="tasks">
               <template v-if="taskList.length > 0">
@@ -44,7 +45,7 @@
           </v-list>
         </v-col>
         <v-col cols="10">
-          <v-menu offset-y :close-on-content-click="false">
+          <!-- <v-menu offset-y :close-on-content-click="false">
             <template #activator="{ on }">
               <v-btn v-on="on">Add Employee</v-btn>
             </template>
@@ -56,7 +57,7 @@
                 <v-btn @click="saveNewEmployee">Save</v-btn>
               </v-card-actions>
             </v-card>
-          </v-menu>
+          </v-menu> -->
           <v-data-iterator :items="roles">
             <template #default="props">
               <v-row>
