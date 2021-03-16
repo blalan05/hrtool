@@ -1,31 +1,31 @@
 <template>
   <div>
-    <v-app-bar dense fixed>
+    <!-- <v-app-bar dense fixed>
       <Nav />
-    </v-app-bar>
+    </v-app-bar> -->
     <v-app>
       <v-row>
-        <Tasks />
-        <Employee />
+        <!-- <Tasks />
+        <Employee /> -->
+        <Upload />
       </v-row>
     </v-app>
   </div>
 </template>
 
 <script>
-import Nav from './components/Nav';
-import Tasks from './components/Tasks';
-import Employee from './components/Employee';
+//import Nav from './components/Nav';
+//import Tasks from './components/Tasks';
+//import Employee from './components/Employee';
+import Upload from './components/Upload';
 //import JSON from './components/myData.json'
 
-//const uploadData = JSONz
+//const uploadData = JSON
 
 export default {
   name: "App",
   components: {
-    Nav,
-    Tasks,
-    Employee,
+    Upload
   }
 };
 </script>

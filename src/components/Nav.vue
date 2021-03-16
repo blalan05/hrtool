@@ -18,7 +18,7 @@
                     ></v-text-field>
                 </v-card-text>
                 <v-card-actions>
-                    <v-btn @click="saveNewTask">Save</v-btn>
+                    <v-btn @click="saveNewTask(uploadedData)">Save</v-btn>
                 </v-card-actions>
                 </v-card>
             </v-menu>
@@ -32,10 +32,20 @@
                     <v-text-field label="Employee" v-model="employeeName"></v-text-field>
                 </v-card-text>
                 <v-card-actions>
-                    <v-btn @click="saveNewEmployee">Save</v-btn>
+                    <v-btn @click="saveNewEmployee(uploadedData)">Save</v-btn>
                 </v-card-actions>
                 </v-card>
             </v-menu>
+            <v-col>
+            <v-menu offset-y :close-on-content-click="false">
+                <template #activator="{ on }">
+                <v-btn v-on="on" @click="exportJSON(uploadedData)">Export JSON</v-btn>
+                </template>
+            </v-menu>
+            </v-col>
+            <v-col>
+                <v-text-field label="Filename" v-model="filename"></v-text-field>
+            </v-col>
         </v-toolbar>
     </div>
 </template>
@@ -57,9 +67,22 @@ export default {
         taskList: [],
         roles: []
     }),
+    props: ['uploadedData'],
     methods: {
         saveNewTask,
-        saveNewEmployee
+        saveNewEmployee,
+        exportJSON(uploadedData) {
+            let textToSave = JSON.stringify(uploadedData);
+            let filename = 'employee_tasks.json';
+            let element = document.createElement('a');
+
+            element.setAttribute('href', 'data:application/json,' + textToSave);
+            element.setAttribute('download', filename);
+            element.style.display = 'none';
+            document.body.appendChild(element);
+            element.click();
+            document.body.removeChild(element);
+        }
     },
     filters: {
         totalPercentage(data) {

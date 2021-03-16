@@ -1,12 +1,12 @@
 <template>
-    <v-col cols="2" v-if=json>
+    <v-col cols="2">
         <v-card-title>Tasks</v-card-title>
         <v-list class="list-group" dense>
-        <draggable :list="taskList" group="tasks">
-            <template v-if="taskList.length > 0">
+        <draggable :list="uploadedData.Tasks" group="tasks">
+            <template v-if="uploadedData.Tasks.length > 0">
             <v-list-item
                 two-line
-                v-for="(task, i) in taskList"
+                v-for="(task, i) in uploadedData.Tasks"
                 :key="i"
                 class="list-group-item"
             >
@@ -27,7 +27,7 @@
 
 <script>
 import draggable from "vuedraggable";
-import json from "./myData.json";
+//import json from "./myData.json";
 
 export default {
   name: "Tasks",
@@ -40,6 +40,7 @@ export default {
     taskList: [],
     roles: []
   }),
+  props: ['uploadedData'],
   filters: {
     totalPercentage(data) {
       let total = 0;
@@ -49,12 +50,12 @@ export default {
       return `${total}%`;
     }
   },
-  created() {
-    this.roles = json.Roles;
-    this.taskList = json.Tasks;
-  },
   components: {
     draggable
-  }
+  },
+  created() {
+    this.roles = this.uploadedData.Roles;
+    this.taskList = this.uploadedData.Tasks;
+  },
 };
 </script>

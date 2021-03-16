@@ -1,10 +1,7 @@
 <template>
     <v-col cols="10" >
-        <div v-if=!json>
-            <Upload />
-        </div>
-        <v-data-iterator v-if=json
-            :items="roles" 
+        <v-data-iterator
+            :items="uploadedData.Roles" 
             :footer-props="{'items-per-page-options': [12, 24, 36, -1]}"
             >
         <template #default="props">
@@ -57,17 +54,17 @@
                                         ></v-text-field>
                                         </v-card-text>
                                         <v-card-actions>
-                                        <v-btn @click="editTask(r, i)">Save</v-btn>
+                                        <v-btn @click="editTask(r, i, uploadedData)">Save</v-btn>
                                         </v-card-actions>
                                     </v-card>
                                     </v-menu>
                                 </v-list-item>
-                                <v-list-item @click="cloneTask(task, r)">
+                                <v-list-item @click="cloneTask(task, r, uploadedData)">
                                     <v-list-item-title>
                                     <v-icon>mdi-content-copy</v-icon>Clone
                                     </v-list-item-title>
                                 </v-list-item>
-                                <v-list-item @click="deleteTask(r, i)">
+                                <v-list-item @click="deleteTask(r, i, uploadedData)">
                                     <v-list-item-title>
                                     <v-icon>mdi-delete</v-icon>Delete
                                     </v-list-item-title>
@@ -93,9 +90,9 @@
 
 <script>
 import draggable from "vuedraggable";
-import json from "./myData.json";
+//import json from "./myData.json";
 import {saveNewTask, saveNewEmployee, deleteTask, editTask, setEditData, cloneTask } from '../utils/helpers';
-import Upload from './Upload';
+//import Upload from './Upload';
 
 export default {
   name: "Employee",
@@ -108,6 +105,7 @@ export default {
     taskList: [],
     roles: []
   }),
+  props: ['uploadedData'],
   methods: {
     saveNewTask,
     saveNewEmployee,
@@ -125,13 +123,8 @@ export default {
       return `${total}%`;
     }
   },
-  created() {
-    this.roles = json.Roles;
-    this.taskList = json.Tasks;
-  },
   components: {
-    draggable,
-    Upload
+    draggable
   }
 };
 </script>

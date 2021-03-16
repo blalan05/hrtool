@@ -1,26 +1,62 @@
 <template>
   <div>
-        <div class="dropbox">
-            <input type="file" id='selectFiles' value='Import' /><br />
-            <!-- <input type="file" id='selectFiles' value='Import' :name="uploadFieldName" class="input-file"/><br /> -->
-            <p>
-                Drag your file here to begin<br> or click to browse
-            </p>
-        </div>
+    <div v-if="!uploadedData">
+      <div class="dropbox">
+        <input type="file" ref='file' id="selectFiles" value="Import" /><br />
+        <!-- <input type="file" id='selectFiles' value='Import' :name="uploadFieldName" class="input-file"/><br /> -->
+        <p>
+          Drag your file here to begin<br />
+          or click to browse
+        </p>
+      </div>
       <!-- <input type="file" id='selectFiles' value="Import" /><br /> -->
-      <v-btn id="import" @click="upload">Import the File!</v-btn>
+      <v-btn id="import" @click="thisUpload">Import the File!</v-btn>
       <p id="result"></p>
+    </div>
+    <div v-else-if="uploadedData">
+      <!-- <p>{{uploadedData}}</p> -->
+      <v-app-bar dense fixed>
+        <Nav :uploadedData ="uploadedData" />
+      </v-app-bar>
+      <v-row>
+        <Tasks :uploadedData ="uploadedData" />
+        <Employee :uploadedData ="uploadedData" />
+      </v-row>
+    </div>
   </div>
 </template>
 
 <script>
-import { upload } from "../utils/helpers";
+//import { upload } from "../utils/helpers";
+import Nav from './Nav';
+import Tasks from './Tasks';
+import Employee from './Employee';
 
 export default {
-    name: "Upload",
-    methods: {
-        upload
-    }
+  name: "Upload",
+  components: {
+    Nav,
+    Tasks,
+    Employee
+  },
+  data: () => {
+    return {
+      uploadedData: false,
+    };
+  },
+  methods: {
+    thisUpload() {
+      const fr = new FileReader();
+      let vm = this;
+      fr.onload = (e) => {
+        let result = JSON.parse(e.target.result);
+        vm.uploadedData = result;
+      };
+      fr.readAsText(vm.$refs.file.files[0]);
+    },
+  },
+  mounted() {
+  },
 };
 </script>
 
