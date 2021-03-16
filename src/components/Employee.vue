@@ -13,7 +13,7 @@
                 :key="item.r"
             >
                 <v-card>
-                <v-card-title>{{ item.name }} - {{ item.tasks | totalPercentage }}</v-card-title>
+                <v-card-title>{{ item.name }} - {{ item.tasks | totalPercentage }}  <span>Avg. Hours <v-btn> {{ item.avgHours }} </v-btn></span></v-card-title>
                 <v-card-text>
                     <v-list class="list-group" dense>
                     <draggable :list="item.tasks" group="tasks">
@@ -26,7 +26,7 @@
                         >
                             <v-list-item-content>
                             <v-list-item-title>{{ task.name }}</v-list-item-title>
-                            <v-list-item-subtitle>{{ `${task.percentage}%` }}</v-list-item-subtitle>
+                            <v-list-item-subtitle>{{ `${Math.floor((task.hours/item.avgHours)*100)}%` }}</v-list-item-subtitle>
                             </v-list-item-content>
                             <v-list-item-action>
                             <v-menu offset-y :close-on-content-click="false">
@@ -48,9 +48,9 @@
                                         <v-text-field label="Task Name" v-model="taskName"></v-text-field>
                                         <v-text-field
                                             label="Amount"
-                                            suffix="%"
-                                            hint="Percentage out of 40hrs"
-                                            v-model="percentage"
+                                            suffix="hrs"
+                                            hint="Hours per Week"
+                                            v-model="hours"
                                         ></v-text-field>
                                         </v-card-text>
                                         <v-card-actions>
@@ -101,9 +101,10 @@ export default {
     addEmployeeMenu: false,
     employeeName: null,
     taskName: null,
-    percentage: null,
+    hours: null,
     taskList: [],
-    roles: []
+    roles: [],
+    value: 40
   }),
   props: ['uploadedData'],
   methods: {
@@ -118,7 +119,7 @@ export default {
     totalPercentage(data) {
       let total = 0;
       data.forEach(task => {
-        total += parseFloat(task.percentage);
+        total += parseFloat(task.hours);
       });
       return `${total}%`;
     }

@@ -12,9 +12,9 @@
                     <v-text-field label="Task Name" v-model="taskName"></v-text-field>
                     <v-text-field
                     label="Amount"
-                    suffix="%"
-                    hint="Percentage out of 40hrs"
-                    v-model="percentage"
+                    suffix="hrs"
+                    hint="Hours per Week"
+                    v-model="hours"
                     ></v-text-field>
                 </v-card-text>
                 <v-card-actions>
@@ -30,6 +30,7 @@
                 <v-card>
                 <v-card-text>
                     <v-text-field label="Employee" v-model="employeeName"></v-text-field>
+                    <v-text-field label="Avg Hours" v-model="avgHours" suffix='hrs' hint='Average hours per week'></v-text-field>
                 </v-card-text>
                 <v-card-actions>
                     <v-btn @click="saveNewEmployee(uploadedData)">Save</v-btn>
@@ -44,7 +45,7 @@
             </v-menu>
             </v-col>
             <v-col>
-                <v-text-field label="Filename" v-model="filename"></v-text-field>
+                <v-text-field id='fileName' label="Filename" v-model="filename"></v-text-field>
             </v-col>
         </v-toolbar>
     </div>
@@ -62,8 +63,10 @@ export default {
         addTaskMenu: false,
         addEmployeeMenu: false,
         employeeName: null,
+        avgHours: null,
         taskName: null,
-        percentage: null,
+        hours: null,
+        filename: null,
         taskList: [],
         roles: []
     }),
@@ -73,7 +76,12 @@ export default {
         saveNewEmployee,
         exportJSON(uploadedData) {
             let textToSave = JSON.stringify(uploadedData);
+            let enteredFileName = document.getElementById('fileName').value;
             let filename = 'employee_tasks.json';
+            if (enteredFileName.length > 0) {
+                filename = enteredFileName + '.json';
+            }
+            document.getElementById('fileName').value = '';
             let element = document.createElement('a');
 
             element.setAttribute('href', 'data:application/json,' + textToSave);
@@ -88,7 +96,7 @@ export default {
         totalPercentage(data) {
         let total = 0;
         data.forEach(task => {
-            total += parseFloat(task.percentage);
+            total += parseFloat(task.hours);
         });
         return `${total}%`;
         }

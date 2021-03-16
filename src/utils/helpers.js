@@ -1,15 +1,18 @@
 
 const saveNewTask = function(uploadedData) {
     console.log(uploadedData)
-    uploadedData.Tasks.push({ name: this.taskName, percentage: this.percentage });
+    let hoursPerWeek = 40
+    let taskHours = (this.hours/hoursPerWeek)*100;
+    uploadedData.Tasks.push({ name: this.taskName, hours: taskHours });
     this.taskName = null;
-    this.percentage = null;
+    this.hours = null;
     this.addTaskMenu = false;
 };
 
 const saveNewEmployee = function(uploadedData) {
-    uploadedData.Roles.push({ name: this.employeeName, tasks: [] });
+    uploadedData.Roles.push({ name: this.employeeName, avgHours: this.avgHours, tasks: [] });
     this.employeeName = null;
+    this.avgHours = null;
     this.addEmployeeMenu = false;
 };
 
@@ -20,15 +23,15 @@ const deleteTask = function(role, task, uploadedData) {
 const editTask = function(role, task, uploadedData) {
     Object.assign(uploadedData.Roles[role].tasks[task], {
     name: this.taskName,
-    percentage: this.percentage
+    hours: this.hours
     });
     this.taskName = null;
-    this.percentage = null;
+    this.hours = null;
 }
 
 const setEditData = function(taskData) {
     this.taskName = taskData.name;
-    this.percentage = taskData.percentage;
+    this.hours = taskData.hours;
 }
 
 const cloneTask = function(task, role, uploadedData) {

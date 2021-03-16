@@ -12,7 +12,7 @@
             >
                 <v-list-item-content>
                 <v-list-item-title>{{ task.name }}</v-list-item-title>
-                <v-list-item-subtitle>{{ `${task.percentage}%` }}</v-list-item-subtitle>
+                <v-list-item-subtitle>{{ `${task.hours}%` }}</v-list-item-subtitle>
                 </v-list-item-content>
             </v-list-item>
             </template>
@@ -36,7 +36,7 @@ export default {
     addEmployeeMenu: false,
     employeeName: null,
     taskName: null,
-    percentage: null,
+    hours: null,
     taskList: [],
     roles: []
   }),
@@ -45,7 +45,7 @@ export default {
     totalPercentage(data) {
       let total = 0;
       data.forEach(task => {
-        total += parseFloat(task.percentage);
+        total += parseFloat(task.hours);
       });
       return `${total}%`;
     }
