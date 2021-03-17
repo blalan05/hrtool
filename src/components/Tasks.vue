@@ -12,7 +12,7 @@
             >
                 <v-list-item-content>
                 <v-list-item-title>{{ task.name }}</v-list-item-title>
-                <v-list-item-subtitle>{{ `${task.hours}%` }}</v-list-item-subtitle>
+                <v-list-item-subtitle>{{ `${task.hours}hrs` }}</v-list-item-subtitle>
                 </v-list-item-content>
             </v-list-item>
             </template>

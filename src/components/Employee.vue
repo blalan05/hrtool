@@ -13,7 +13,61 @@
                 :key="item.r"
             >
                 <v-card>
-                <v-card-title>{{ item.name }} - {{ item.tasks | totalPercentage }}  <span>Avg. Hours <v-btn> {{ item.avgHours }} </v-btn></span></v-card-title>
+                <v-card-title>{{ item.name }} - {{ [uploadedData,r] | totalPercentage }}
+                    <span>Avg. Hours</span>
+                    <v-menu offset-y :close-on-content-click="false">
+                        <template  #activator="{ on }">
+                            <v-btn v-on="on">
+                                {{ item.avgHours }}
+                            </v-btn>
+                        </template>
+                        
+                        <v-list dense>
+                            <v-list-item> 
+                                <v-menu offset-y :close-on-content-click="false">
+                                    <template #activator="{ on }">
+                                        <v-list-item-title v-on="on" @click="setEditAvgHours(item)">
+                                        <v-icon>mdi-pencil</v-icon>Edit
+                                        </v-list-item-title>
+                                    </template>
+                                    <!-- <template #activator="{ on }">
+                                    <v-btn v-on="on" @click="setEditAvgHours(item)">Edit</v-btn>
+                                    </template> -->
+                                    <v-card>
+                                    <v-card-text>
+                                        <v-text-field label="Employee Name" v-model="newEmployeeName"></v-text-field>
+                                        <v-text-field
+                                        label="Avg Hours Worked"
+                                        suffix="hrs"
+                                        hint="Hours per Week"
+                                        v-model="avgHours"
+                                        ></v-text-field>
+                                    </v-card-text>
+                                    <v-card-actions>
+                                        <v-btn @click="editAvgHours(r, uploadedData)">Save</v-btn>
+                                    </v-card-actions>
+                                    </v-card>
+                                </v-menu>
+                            </v-list-item>
+                            <v-list-item @click="deleteEmployee(r, item, uploadedData)">
+                                <v-list-item-title>
+                                <v-icon>mdi-delete</v-icon>Delete
+                                </v-list-item-title>
+                            </v-list-item>
+                        </v-list>
+                    </v-menu>
+
+                    <v-progress-linear 
+                        :value="(item.assignedHours/item.avgHours)*100"
+                        background-color = 'grey'
+                        :color="getColor((item.assignedHours/item.avgHours)*100)"
+                        
+                    ></v-progress-linear>
+
+                    <!-- <div class="progress">
+                        <v-progress-linear class="progress-bar" role="progressbar" :value="(item.assignedHours/item.avgHours)*100" max="100" />
+                    </div> -->
+                </v-card-title>
                 <v-card-text>
                     <v-list class="list-group" dense>
                     <draggable :list="item.tasks" group="tasks">
@@ -91,7 +145,7 @@
 <script>
 import draggable from "vuedraggable";
 //import json from "./myData.json";
-import {saveNewTask, saveNewEmployee, deleteTask, editTask, setEditData, cloneTask } from '../utils/helpers';
+import {saveNewTask, saveNewEmployee, deleteTask, editTask, setEditData, cloneTask, setEditAvgHours, editAvgHours, deleteEmployee } from '../utils/helpers';
 //import Upload from './Upload';
 
 export default {
@@ -100,28 +154,68 @@ export default {
     addTaskMenu: false,
     addEmployeeMenu: false,
     employeeName: null,
+    newEmployeeName: null,
     taskName: null,
     hours: null,
+    avgHours: null,
     taskList: [],
     roles: [],
     value: 40
   }),
   props: ['uploadedData'],
+  computed: {
+      styleClass() {
+          let color = 'green'
+          return  color
+      }
+  },
   methods: {
     saveNewTask,
     saveNewEmployee,
     deleteTask,
     editTask,
     setEditData,
-    cloneTask
+    cloneTask,
+    setEditAvgHours,
+    editAvgHours,
+    deleteEmployee,
+    getColor(quant) {
+        // switch(quant) {
+        //     case quant < 70:
+        //         return 'red'
+        //     case quant < 90:
+        //         return 'yellow'
+        //     case quant < 110:
+        //         return 'green'
+        //     case quant < 115:
+        //         return 'yellow'
+        //     case quant > 115:
+        //         return 'red'
+        // }
+        if (quant < 70 || quant > 115) {
+            return 'red'
+        }
+        if (quant > 90 && quant < 110) {
+            return 'green'
+        } 
+        else {
+            return 'yellow'
+        }
+    
+    }
   },
   filters: {
     totalPercentage(data) {
-      let total = 0;
-      data.forEach(task => {
-        total += parseFloat(task.hours);
-      });
-      return `${total}%`;
+        let total = 0;
+        let index = data[1]
+        data[0].Roles[index].tasks.forEach(task => {
+            total += parseFloat(task.hours);
+        });
+        Object.assign(data[0].Roles[index], {
+            assignedHours: total
+        })
+        total = Math.floor((total/data[0].Roles[index].avgHours)*100);
+    return `${total}%`;
     }
   },
   components: {

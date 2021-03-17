@@ -1,9 +1,6 @@
 
 const saveNewTask = function(uploadedData) {
-    console.log(uploadedData)
-    let hoursPerWeek = 40
-    let taskHours = (this.hours/hoursPerWeek)*100;
-    uploadedData.Tasks.push({ name: this.taskName, hours: taskHours });
+    uploadedData.Tasks.push({ name: this.taskName, hours: this.hours });
     this.taskName = null;
     this.hours = null;
     this.addTaskMenu = false;
@@ -38,6 +35,26 @@ const cloneTask = function(task, role, uploadedData) {
     uploadedData.Roles[role].tasks.push(task);
 }
 
+const editAvgHours = function(r, uploadedData) {
+    Object.assign(uploadedData.Roles[r], {
+        name: this.newEmployeeName,
+        avgHours: this.avgHours,
+    });
+    this.newEmployeeName = null;
+    this.avgHours = null;
+}
+
+const setEditAvgHours = function(itemData) {
+    this.newEmployeeName = itemData.name;
+    this.avgHours = itemData.avgHours;
+}
+
+const deleteEmployee = function(r, item, uploadedData) {
+    uploadedData.Roles.splice(r,1);
+};
+
+
+
 // const upload = function() {
 //     console.log('entered button')
 //     const files = document.getElementById('selectFiles').files;
@@ -63,4 +80,4 @@ const cloneTask = function(task, role, uploadedData) {
 //     return uploadedData;
 // }
 
-module.exports = { saveNewTask, saveNewEmployee, deleteTask, editTask, setEditData, cloneTask };
+module.exports = { saveNewTask, saveNewEmployee, deleteTask, editTask, setEditData, cloneTask, setEditAvgHours, editAvgHours, deleteEmployee };
