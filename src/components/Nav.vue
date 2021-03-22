@@ -48,13 +48,13 @@
                     <v-text-field id='fileName' label="Filename" v-model="filename"></v-text-field>
                 </v-card-text>
                 <v-card-actions>
-                    <v-btn @click="exportJSON(uploadedData)">Export JSON</v-btn>
+                    <v-btn @click='exportJSON(uploadedData)'>Export JSON</v-btn>
                 </v-card-actions>
                 <v-card-actions>
-                    <v-btn @click='createPDF(uploadedData)'>Export PDF</v-btn>
+                    <v-btn @click='exportPDF(uploadedData)'>Export PDF</v-btn>
                 </v-card-actions>
                 <v-card-actions>
-                    <v-btn>Export Excel</v-btn>
+                    <v-btn @click='exportCSV(uploadedData)'>Export Excel</v-btn>
                 </v-card-actions>
                 <v-card-actions>
                     <v-btn>Export All</v-btn>
@@ -79,6 +79,8 @@ import {saveNewTask, saveNewEmployee } from '../utils/helpers';
 const pdfMake= require('pdfmake/build/pdfmake.js');
 const pdfFonts = require('pdfmake/build/vfs_fonts.js');
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
+
+import XLSX from 'xlsx';
 
 export default {
     name: "Nav",
@@ -114,7 +116,7 @@ export default {
             element.click();
             document.body.removeChild(element);
         },
-        createPDF(uploadedData) {
+        exportPDF(uploadedData) {
             let enteredFileName = document.getElementById('fileName').value;
             let filename = 'employee_tasks.pdf';
             if (enteredFileName.length > 0) {
@@ -186,6 +188,56 @@ export default {
                 }
             }
             pdfMake.createPdf(docDefinition).download(filename);
+        },
+        exportCSV(uploadedData) {
+
+            let enteredFileName = document.getElementById('fileName').value;
+            let filename = 'employee_tasks.xlsx';
+            if (enteredFileName.length > 0) {
+                filename = enteredFileName + '.xlsx';
+            }
+            document.getElementById('fileName').value = '';
+
+            //console.log(uploadedData);
+            //let ws_name = 'Work Name';
+            let wb = XLSX.utils.book_new();
+            for (let i = 0; i < uploadedData.Roles.length; i++) {
+                //console.log(uploadedData.Roles[0].tasks[0])
+                let ws_data = []
+                for (let j = 0; j < uploadedData.Roles[i].tasks.length; j++) {
+                    //console.log('ehy')
+                    ws_data.push(uploadedData.Roles[0].tasks[j])
+                    //console.log(ws_data)
+                }
+                let ws = XLSX.utils.json_to_sheet(ws_data);
+                let ws_name = uploadedData.Roles[i].name;
+                XLSX.utils.book_append_sheet(wb,ws, ws_name);
+            }
+            // let ws_data = [
+            //     uploadedData.Roles[0],
+            //     uploadedData.Roles[0].tasks[0],
+            //     uploadedData.Roles[0].tasks[1],
+            //     uploadedData.Roles[0].tasks[2],
+            //     uploadedData.Roles[0].tasks[3],
+            //     uploadedData.Roles[0].tasks[4],
+            //     uploadedData.Roles[0].tasks[5],
+            //     uploadedData.Roles[0].tasks[6],
+            //     uploadedData.Roles[0].tasks[7]
+            // ];
+
+            // let ws = XLSX.utils.json_to_sheet(ws_data);
+            // XLSX.utils.book_append_sheet(wb,ws);
+
+            //wb.Sheets['sheetName'] = 'hello'
+            XLSX.writeFile(wb, filename, false);
+            //console.log(wb);
+
+
+            // let wb = XLSX.utils.book_new()
+            // let sheetData = XLSX.utils.json_to_sheet(uploadedData);
+            // wb.SheetNames.push('sheetName');
+            // wb.Sheets['sheetname'] = sheetData;
+            // XLSX.writeFile(wb, 'filename.xlsx', false);
         }
     },
     filters: {
