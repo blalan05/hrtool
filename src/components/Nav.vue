@@ -190,7 +190,7 @@ export default {
             pdfMake.createPdf(docDefinition).download(filename);
         },
         exportCSV(uploadedData) {
-
+            //defines the default export filename and overwrites if the user adds a filename
             let enteredFileName = document.getElementById('fileName').value;
             let filename = 'employee_tasks.xlsx';
             if (enteredFileName.length > 0) {
@@ -198,46 +198,289 @@ export default {
             }
             document.getElementById('fileName').value = '';
 
-            //console.log(uploadedData);
-            //let ws_name = 'Work Name';
-            let wb = XLSX.utils.book_new();
-            for (let i = 0; i < uploadedData.Roles.length; i++) {
-                //console.log(uploadedData.Roles[0].tasks[0])
-                let ws_data = []
-                for (let j = 0; j < uploadedData.Roles[i].tasks.length; j++) {
-                    //console.log('ehy')
-                    ws_data.push(uploadedData.Roles[0].tasks[j])
-                    //console.log(ws_data)
+
+
+// -----------------------------------------Previous Attempt---------------------------------------------------------
+
+
+            // let ideaArray = [];
+            // let ideaName = [];
+            // let ideaHours = [];
+            // let ideaTitle = [];
+            // let ideaTask = [];
+            // let ideaTotal = [];
+
+            // //find longest task list index
+            // let maxTask = 0
+            // let maxIndex = 0
+            // for (let i = 0; i<uploadedData.Roles.length; i++) {
+            //     if (uploadedData.Roles[i].tasks.length > maxTask) {
+            //         maxTask = uploadedData.Roles[i].tasks.length
+            //         maxIndex = i
+            //     }
+            // }
+   
+            //creates the aoa for the tasklist (only the first 4 employees)
+            // let count = 1
+            // let employeeCount = 0
+
+            // for (let j = 0; j<uploadedData.Roles[maxIndex].tasks.length; j++) {
+            //     let tempArray = [];
+            //     while (count < (employeeCount*4)) {
+            //         if (uploadedData.Roles[count-1].tasks[j-1] === undefined) {
+            //             //console.log(uploadedData.Roles[(count-1)].tasks[j-1].name)
+            //             console.log('count ' + count)
+            //             console.log('while limit ' + employeeCount*4)
+            //             tempArray.push('','','','','');
+            //             count += 1
+            //         } else{
+            //             console.log(uploadedData.Roles[(count-1)].tasks[j-1].name)
+            //             console.log('j-1 ' + (j-1))
+            //             console.log('count ' + count)
+            //             console.log('while limit ' + employeeCount*4)
+            //             tempArray.push(uploadedData.Roles[count-1].tasks[j-1].name, parseInt(uploadedData.Roles[count-1].tasks[j-1].hours), Math.floor((uploadedData.Roles[count-1].tasks[j-1].hours/uploadedData.Roles[count-1].avgHours)*100), '', '');
+            //             count += 1
+            //         }
+            //     }
+            //     employeeCount += 1
+            //     ideaTask.push(tempArray);
+            // }
+            // console.log(ideaTask);
+
+
+
+
+
+            // var jk = 0;
+            // for (let j = 0; j<uploadedData.Roles[maxIndex].tasks.length; j++) {
+            //     let tempArray = [];
+            //     if(uploadedData.Roles.length > (4*(j+1))){
+            //         for (let k = jk; k<4*(j+1); k++) {
+            //             if (uploadedData.Roles[k].tasks[j] === undefined) {
+            //                 tempArray.push('','','','','');
+            //             } else{
+            //                 tempArray.push(uploadedData.Roles[k].tasks[j].name, parseInt(uploadedData.Roles[k].tasks[j].hours), Math.floor((uploadedData.Roles[k].tasks[j].hours/uploadedData.Roles[k].avgHours)*100), '', '');
+            //             }
+            //         }
+            //         ideaTask.push(tempArray);
+            //     } else {
+            //         console.log((uploadedData.Roles.length - (4*(j+1))))
+            //     }
+            // }
+            // console.log(ideaTask);
+
+            // for (let i =0; i<uploadedData.Roles.length; i++){
+            //     if(!((i+1)% 4 === 0)) {
+            //         ideaName.push(uploadedData.Roles[i].name, '','','','');
+            //         ideaHours.push('Average Hours', parseInt(uploadedData.Roles[i].avgHours), 'Assigned Hours', uploadedData.Roles[i].assignedHours, '')
+            //         ideaTitle.push('Task', 'Hours', 'Percent','','')
+            //         ideaTotal.push('Total', null, null,'','')
+            //     } else {
+            //         ideaName.push(uploadedData.Roles[i].name, '','','','');
+            //         ideaHours.push('Average Hours', parseInt(uploadedData.Roles[i].avgHours), 'Assigned Hours', uploadedData.Roles[i].assignedHours, '')
+            //         ideaTitle.push('Task', 'Hours', 'Percent','','')
+            //         ideaTotal.push('Total', null, null,'','')
+
+            //         //adding to total array
+            //         ideaArray.push(ideaName);
+            //         ideaArray.push(ideaHours);
+            //         ideaArray.push(ideaTitle);
+
+            //         //loops through ideaTask to populate tasks (only first 4 employees)
+            //         for (let i = 0; i<ideaTask.length; i++) {
+            //             ideaArray.push(ideaTask[i]);
+            //         }
+
+            //         ideaArray.push(ideaTotal);
+            //         ideaArray.push(['']);
+            //         ideaArray.push(['']);
+
+            //         //clear temp arrays
+            //         ideaName = [];
+            //         ideaHours = [];
+            //         ideaTitle = [];
+            //         // ideaTask = [];
+            //         ideaTotal = [];
+            //     }
+            // }
+            // ideaArray.push(ideaName);
+            // ideaArray.push(ideaHours);
+            // ideaArray.push(ideaTitle);
+            // //ideaArray.push(ideaTask[0]);
+            // ideaArray.push(ideaTotal);
+
+
+//----------------------------------------------Initial Chunking Attempt----------------------------------------
+
+            // let ideaArray = [];
+            let ideaName = [];
+            let ideaHours = [];
+            let ideaTitle = [];
+            let ideaTask = [];
+            let ideaTotal = [];
+            let ideaArray = [];
+            let perChunk = 4;
+            
+            let result = uploadedData.Roles.reduce((resultArray, user, index) => {
+                const chunkIndex = Math.floor(index/perChunk)
+
+                if(!resultArray[chunkIndex]) {
+                    resultArray[chunkIndex] = []
                 }
-                let ws = XLSX.utils.json_to_sheet(ws_data);
+
+                resultArray[chunkIndex].push(user)
+
+                return resultArray
+            }, [])
+
+            let allUsers = [];
+
+            for (let i = 0; i < result.length; i++) {
+                let userRow = [];
+                let userNames = [];
+                let userHours = [];
+                let userTasks = [];
+
+
+                //find longest task list length
+                let maxTask = result[i].reduce((total, u) => total = u.tasks.length > total? u.tasks.length : total, 0)
+
+                for (let j = 0; j <result[i].length; j++) {
+                    userNames.push(result[i][j].name, '','','','');
+                    userHours.push('Average Hours', parseInt(result[i][j].avgHours), 'Assigned Hours', result[i][j].assignedHours, '')
+                
+
+                    let tempArray = [];
+                    for (let k = 0; k<maxTask; k++) {
+                        if (result[i][j].tasks[k] === undefined) {
+                            tempArray.push('','','','','');
+                        } else{
+                            tempArray.push(result[i][j].tasks[k].name, parseInt(result[i][j].tasks[k].hours), Math.floor((result[i][j].tasks[k].hours/result[i][j].avgHours)*100), '', '');
+                        }
+                    }
+                    userTasks.push(tempArray);
+
+            
+                    // for (let j = 0; j<uploadedData.Roles[maxIndex].tasks.length; j++) {
+                    //     let tempArray = [];
+                    //     if(uploadedData.Roles.length > (4*(j+1))){
+                    //         for (let k = jk; k<4*(j+1); k++) {
+                    //             if (uploadedData.Roles[k].tasks[j] === undefined) {
+                    //                 tempArray.push('','','','','');
+                    //             } else{
+                    //                 tempArray.push(uploadedData.Roles[k].tasks[j].name, parseInt(uploadedData.Roles[k].tasks[j].hours), Math.floor((uploadedData.Roles[k].tasks[j].hours/uploadedData.Roles[k].avgHours)*100), '', '');
+                    //             }
+                    //         }
+                    //         ideaTask.push(tempArray);
+                    //     } else {
+                    //         console.log((uploadedData.Roles.length - (4*(j+1))))
+                    //     }
+                    // }
+                    // console.log(ideaTask);
+
+
+                }
+                console.log(userTasks);
+
+                userRow.push(userNames);
+                userRow.push(userHours)
+                userRow.push(['Task', 'Hours', 'Percent','',''])
+                userRow.push(userTasks);
+                userTasks = [];
+                userRow.push(['Total', null, null,'',''])
+                userRow.push([''], ['']);
+                allUsers.push(userRow);
+            }
+
+
+
+
+            for (let i =0; i<uploadedData.Roles.length; i++){
+                if(!((i+1)% 4 === 0)) {
+                    ideaName.push(uploadedData.Roles[i].name, '','','','');
+                    ideaHours.push('Average Hours', parseInt(uploadedData.Roles[i].avgHours), 'Assigned Hours', uploadedData.Roles[i].assignedHours, '')
+                    ideaTitle.push('Task', 'Hours', 'Percent','','')
+                    ideaTotal.push('Total', null, null,'','')
+                } else {
+                    ideaName.push(uploadedData.Roles[i].name, '','','','');
+                    ideaHours.push('Average Hours', parseInt(uploadedData.Roles[i].avgHours), 'Assigned Hours', uploadedData.Roles[i].assignedHours, '')
+                    ideaTitle.push('Task', 'Hours', 'Percent','','')
+                    ideaTotal.push('Total', null, null,'','')
+
+                    //adding to total array
+                    ideaArray.push(ideaName);
+                    ideaArray.push(ideaHours);
+                    ideaArray.push(ideaTitle);
+
+                    //loops through ideaTask to populate tasks (only first 4 employees)
+                    for (let i = 0; i<ideaTask.length; i++) {
+                        ideaArray.push(ideaTask[i]);
+                    }
+
+                    ideaArray.push(ideaTotal);
+                    ideaArray.push(['']);
+                    ideaArray.push(['']);
+
+                    //clear temp arrays
+                    ideaName = [];
+                    ideaHours = [];
+                    ideaTitle = [];
+                    // ideaTask = [];
+                    ideaTotal = [];
+                }
+            }
+            ideaArray.push(ideaName);
+            ideaArray.push(ideaHours);
+            ideaArray.push(ideaTitle);
+            //ideaArray.push(ideaTask[0]);
+            ideaArray.push(ideaTotal);
+
+
+
+// -----------------------------------Created Individual Employee Sheets -------------------------------------
+            //create new excel book
+            let wb = XLSX.utils.book_new();
+            //loops through each employee in the json file and creates approriate aoa
+            for (let i = 0; i < uploadedData.Roles.length; i++) {
+                //creates a parent array for each employee
+                let wsArray = [];
+                let nameArray = [uploadedData.Roles[i].name];
+                wsArray.push(nameArray);
+    
+                let hoursArray = ['Average Hours', parseInt(uploadedData.Roles[i].avgHours), 'Assigned Hours', uploadedData.Roles[i].assignedHours];
+                wsArray.push(hoursArray);
+    
+                let titleArray = ['Task', 'Hours', 'Percent'];
+                wsArray.push(titleArray);
+    
+                for (let j = 0; j < uploadedData.Roles[i].tasks.length; j++) {
+                    let taskArray = [uploadedData.Roles[i].tasks[j].name, parseInt(uploadedData.Roles[i].tasks[j].hours), Math.floor((uploadedData.Roles[i].tasks[j].hours/uploadedData.Roles[i].avgHours)*100)];
+                    wsArray.push(taskArray);
+                }
+    
+                let totalArray = ['Total', null, null];
+                wsArray.push(totalArray);
+    
+                //gives the length of the array (ie where to but functions) in Column B and C
+                let formulaHeight = wsArray.length;
+                //adds data to the current worksheet
+                let ws = XLSX.utils.aoa_to_sheet(wsArray);
+
+                //add function for the total hours and percent
+                ws[`B${formulaHeight}`] = {f: `SUM(B4:B${formulaHeight-1})`};
+                ws[`C${formulaHeight}`] = {f: `SUM(C4:C${formulaHeight-1})`};
+
+                //adds name to worksheet and adds worksheet to the excelbook
                 let ws_name = uploadedData.Roles[i].name;
                 XLSX.utils.book_append_sheet(wb,ws, ws_name);
             }
-            // let ws_data = [
-            //     uploadedData.Roles[0],
-            //     uploadedData.Roles[0].tasks[0],
-            //     uploadedData.Roles[0].tasks[1],
-            //     uploadedData.Roles[0].tasks[2],
-            //     uploadedData.Roles[0].tasks[3],
-            //     uploadedData.Roles[0].tasks[4],
-            //     uploadedData.Roles[0].tasks[5],
-            //     uploadedData.Roles[0].tasks[6],
-            //     uploadedData.Roles[0].tasks[7]
-            // ];
+            let ws = XLSX.utils.aoa_to_sheet(ideaArray);
+            let ws_name = 'All Employees';
+            XLSX.utils.aoa_to_sheet(ideaArray);
+            XLSX.utils.book_append_sheet(wb,ws, ws_name);
 
-            // let ws = XLSX.utils.json_to_sheet(ws_data);
-            // XLSX.utils.book_append_sheet(wb,ws);
-
-            //wb.Sheets['sheetName'] = 'hello'
+            //exports the file
             XLSX.writeFile(wb, filename, false);
-            //console.log(wb);
-
-
-            // let wb = XLSX.utils.book_new()
-            // let sheetData = XLSX.utils.json_to_sheet(uploadedData);
-            // wb.SheetNames.push('sheetName');
-            // wb.Sheets['sheetname'] = sheetData;
-            // XLSX.writeFile(wb, 'filename.xlsx', false);
         }
     },
     filters: {
