@@ -30,9 +30,6 @@
                                         <v-icon>mdi-pencil</v-icon>Edit
                                         </v-list-item-title>
                                     </template>
-                                    <!-- <template #activator="{ on }">
-                                    <v-btn v-on="on" @click="setEditAvgHours(item)">Edit</v-btn>
-                                    </template> -->
                                     <v-card>
                                     <v-card-text>
                                         <v-text-field label="Employee Name" v-model="newEmployeeName"></v-text-field>
@@ -61,12 +58,7 @@
                         :value="(item.assignedHours/item.avgHours)*100"
                         background-color = 'grey'
                         :color="getColor((item.assignedHours/item.avgHours)*100)"
-                        
                     ></v-progress-linear>
-
-                    <!-- <div class="progress">
-                        <v-progress-linear class="progress-bar" role="progressbar" :value="(item.assignedHours/item.avgHours)*100" max="100" />
-                    </div> -->
                 </v-card-title>
                 <v-card-text>
                     <v-list class="list-group" dense>
@@ -144,9 +136,7 @@
 
 <script>
 import draggable from "vuedraggable";
-//import json from "./myData.json";
 import {saveNewTask, saveNewEmployee, deleteTask, editTask, setEditData, cloneTask, setEditAvgHours, editAvgHours, deleteEmployee } from '../utils/helpers';
-//import Upload from './Upload';
 
 export default {
   name: "Employee",
@@ -180,18 +170,6 @@ export default {
     editAvgHours,
     deleteEmployee,
     getColor(quant) {
-        // switch(quant) {
-        //     case quant < 70:
-        //         return 'red'
-        //     case quant < 90:
-        //         return 'yellow'
-        //     case quant < 110:
-        //         return 'green'
-        //     case quant < 115:
-        //         return 'yellow'
-        //     case quant > 115:
-        //         return 'red'
-        // }
         if (quant < 70 || quant > 115) {
             return 'red'
         }
@@ -201,7 +179,6 @@ export default {
         else {
             return 'yellow'
         }
-    
     }
   },
   filters: {

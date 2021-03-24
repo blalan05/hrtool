@@ -3,18 +3,15 @@
     <div v-if="!uploadedData">
       <div class="dropbox">
         <input type="file" ref='file' id="selectFiles" value="Import" /><br />
-        <!-- <input type="file" id='selectFiles' value='Import' :name="uploadFieldName" class="input-file"/><br /> -->
         <p>
           Drag your file here to begin<br />
           or click to browse
         </p>
       </div>
-      <!-- <input type="file" id='selectFiles' value="Import" /><br /> -->
       <v-btn id="import" @click="thisUpload">Import the File!</v-btn>
       <p id="result"></p>
     </div>
     <div v-else-if="uploadedData">
-      <!-- <p>{{uploadedData}}</p> -->
       <v-app-bar dense fixed>
         <Nav :uploadedData ="uploadedData" />
       </v-app-bar>
@@ -27,7 +24,6 @@
 </template>
 
 <script>
-//import { upload } from "../utils/helpers";
 import Nav from './Nav';
 import Tasks from './Tasks';
 import Employee from './Employee';

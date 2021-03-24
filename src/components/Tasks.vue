@@ -27,7 +27,6 @@
 
 <script>
 import draggable from "vuedraggable";
-//import json from "./myData.json";
 
 export default {
   name: "Tasks",

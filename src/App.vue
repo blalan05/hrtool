@@ -1,12 +1,7 @@
 <template>
   <div>
-    <!-- <v-app-bar dense fixed>
-      <Nav />
-    </v-app-bar> -->
     <v-app>
       <v-row>
-        <!-- <Tasks />
-        <Employee /> -->
         <Upload />
       </v-row>
     </v-app>
@@ -14,13 +9,7 @@
 </template>
 
 <script>
-//import Nav from './components/Nav';
-//import Tasks from './components/Tasks';
-//import Employee from './components/Employee';
 import Upload from './components/Upload';
-//import JSON from './components/myData.json'
-
-//const uploadData = JSON
 
 export default {
   name: "App",
