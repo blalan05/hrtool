@@ -53,31 +53,4 @@ const deleteEmployee = function(r, item, uploadedData) {
     uploadedData.Roles.splice(r,1);
 };
 
-
-
-// const upload = function() {
-//     console.log('entered button')
-//     const files = document.getElementById('selectFiles').files;
-//     console.log(files)
-//     if (files.length <= 0) {
-//         return false
-//     }
-
-//     const fr = new FileReader();
-//     let uploadedData = {54: 1};
-//     fr.onload = e => {
-//         let result = JSON.parse(e.target.result);
-//         //console.log(result);
-//         console.log(uploadedData);
-//         // const formatted = JSON.stringify(result, null, 2);
-//         // console.log(formatted)
-//         // document.getElementById('result').innerHTML = formatted;
-//         uploadedData = result;
-//         //console.log(uploadedData)
-//     }
-//     fr.readAsText(files.item(0));
-//     //console.log(uploadedData);
-//     return uploadedData;
-// }
-
 module.exports = { saveNewTask, saveNewEmployee, deleteTask, editTask, setEditData, cloneTask, setEditAvgHours, editAvgHours, deleteEmployee };
